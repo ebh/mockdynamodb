@@ -1,7 +1,7 @@
 .PHONY: fmt lint test
 
 test:
-	go test -v ./...
+	go test -v -race -coverprofile=coverage.txt -covermode=atomic
 
 lint:
 	golangci-lint run
