@@ -1,0 +1,1 @@
+package mockdynamodb_test
