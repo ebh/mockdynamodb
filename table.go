@@ -17,6 +17,7 @@ func newTable() *Table {
 	}
 }
 
+// Items returns the PutItemInput submitted by all calls to PutItem()
 func (t *Table) Items() *[]dynamodb.PutItemInput {
 	t.Lock()
 	defer t.Unlock()
