@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 )
 
-// PutItem is not implemented. It will panic in all cases.
+// PutItem is implemented.
 func (db *DynamoDb) PutItem(input *dynamodb.PutItemInput) (*dynamodb.PutItemOutput, error) {
 	db.Lock()
 	defer db.Unlock()
