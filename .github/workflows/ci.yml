@@ -1,0 +1,21 @@
+name: Continuous Integration
+
+on: push
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        go: [ 1.14, 1.15 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go }}
+      - name: Run tests
+        run: make test
