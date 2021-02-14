@@ -486,40 +486,6 @@ func TestDynamoDb_ListTagsOfResourceRequest(t *testing.T) {
 	})
 }
 
-func TestDynamoDb_Query(t *testing.T) {
-	assert.PanicsWithValue(t, "Query is not implemented", func() {
-		_, err := mockdynamodb.New().Query(nil)
-		require.NoError(t, err)
-	})
-}
-
-func TestDynamoDb_QueryWithContext(t *testing.T) {
-	assert.PanicsWithValue(t, "QueryWithContext is not implemented", func() {
-		_, err := mockdynamodb.New().QueryWithContext(context.TODO(), nil)
-		require.NoError(t, err)
-	})
-}
-
-func TestDynamoDb_QueryRequest(t *testing.T) {
-	assert.PanicsWithValue(t, "QueryRequest is not implemented", func() {
-		mockdynamodb.New().QueryRequest(nil)
-	})
-}
-
-func TestDynamoDb_QueryPages(t *testing.T) {
-	assert.PanicsWithValue(t, "QueryPages is not implemented", func() {
-		err := mockdynamodb.New().QueryPages(nil, nil)
-		require.NoError(t, err)
-	})
-}
-
-func TestDynamoDb_QueryPagesWithContext(t *testing.T) {
-	assert.PanicsWithValue(t, "QueryPagesWithContext is not implemented", func() {
-		err := mockdynamodb.New().QueryPagesWithContext(context.TODO(), nil, nil)
-		require.NoError(t, err)
-	})
-}
-
 func TestDynamoDb_RestoreTableFromBackup(t *testing.T) {
 	assert.PanicsWithValue(t, "RestoreTableFromBackup is not implemented", func() {
 		_, err := mockdynamodb.New().RestoreTableFromBackup(nil)

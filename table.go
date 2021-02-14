@@ -8,21 +8,71 @@ import (
 
 type Table struct {
 	sync.RWMutex
-	items []dynamodb.PutItemInput
+
+	receivedPutItemInputs []dynamodb.PutItemInput
+	returnPutItemOutputs  []*dynamodb.PutItemOutput
+
+	receivedQueryInputs []dynamodb.QueryInput
+	returnQueryOutputs  []*dynamodb.QueryOutput
 }
 
 func newTable() *Table {
 	return &Table{
-		items: nil,
+		receivedPutItemInputs: nil,
+		returnPutItemOutputs:  []*dynamodb.PutItemOutput{},
 	}
 }
 
-// Items returns the PutItemInput submitted by all calls to PutItem()
-func (t *Table) Items() *[]dynamodb.PutItemInput {
+// ReceivedPutItemInputs returns the PutItemInputs submitted by all calls to PutItem()
+// The order of the elements returned is the order in which they were received by PutItem()
+func (t *Table) ReceivedPutItemInputs() *[]dynamodb.PutItemInput {
 	t.Lock()
 	defer t.Unlock()
 
-	tmp := make([]dynamodb.PutItemInput, len(t.items))
-	copy(tmp, t.items)
+	tmp := make([]dynamodb.PutItemInput, len(t.receivedPutItemInputs))
+	copy(tmp, t.receivedPutItemInputs)
 	return &tmp
+}
+
+// AddReturnPutItemOutput pushes a PutItemOutput that will then be returned by calls to PutItem()
+// PutItemOutputs are returned in the same order in which they are pushed
+// If nil is pushed then PutItem() will return an error
+func (t *Table) AddReturnPutItemOutput(i *dynamodb.PutItemOutput) {
+	t.Lock()
+	defer t.Unlock()
+
+	t.returnPutItemOutputs = append(t.returnPutItemOutputs, i)
+}
+
+func (t *Table) popReturnPutItemOutput() *dynamodb.PutItemOutput {
+	x, a := t.returnPutItemOutputs[0], t.returnPutItemOutputs[1:]
+	t.returnPutItemOutputs = a
+	return x
+}
+
+// ReceivedQueryInputs returns the QueryInputs submitted by all calls to Query()
+// The order of the elements returned is the order in which they were received by Query()
+func (t *Table) ReceivedQueryInputs() *[]dynamodb.QueryInput {
+	t.Lock()
+	defer t.Unlock()
+
+	tmp := make([]dynamodb.QueryInput, len(t.receivedQueryInputs))
+	copy(tmp, t.receivedQueryInputs)
+	return &tmp
+}
+
+// AddReturnQueryOutput pushes a QueryOutput that will then be returned by calls to Query()
+// QueryOutputs are returned in the same order in which they are pushed
+// If nil is pushed then Query() will return an error
+func (t *Table) AddReturnQueryOutput(i *dynamodb.QueryOutput) {
+	t.Lock()
+	defer t.Unlock()
+
+	t.returnQueryOutputs = append(t.returnQueryOutputs, i)
+}
+
+func (t *Table) popReturnQueryOutput() *dynamodb.QueryOutput {
+	x, a := t.returnQueryOutputs[0], t.returnQueryOutputs[1:]
+	t.returnQueryOutputs = a
+	return x
 }

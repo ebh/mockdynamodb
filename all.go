@@ -361,31 +361,6 @@ func (db *DynamoDb) ListTagsOfResourceRequest(*dynamodb.ListTagsOfResourceInput)
 	panic("ListTagsOfResourceRequest is not implemented")
 }
 
-// Query is not implemented. It will panic in all cases.
-func (db *DynamoDb) Query(*dynamodb.QueryInput) (*dynamodb.QueryOutput, error) {
-	panic("Query is not implemented")
-}
-
-// QueryWithContext is not implemented. It will panic in all cases.
-func (db *DynamoDb) QueryWithContext(aws.Context, *dynamodb.QueryInput, ...request.Option) (*dynamodb.QueryOutput, error) {
-	panic("QueryWithContext is not implemented")
-}
-
-// QueryRequest is not implemented. It will panic in all cases.
-func (db *DynamoDb) QueryRequest(*dynamodb.QueryInput) (*request.Request, *dynamodb.QueryOutput) {
-	panic("QueryRequest is not implemented")
-}
-
-// QueryPages is not implemented. It will panic in all cases.
-func (db *DynamoDb) QueryPages(*dynamodb.QueryInput, func(*dynamodb.QueryOutput, bool) bool) error {
-	panic("QueryPages is not implemented")
-}
-
-// QueryPagesWithContext is not implemented. It will panic in all cases.
-func (db *DynamoDb) QueryPagesWithContext(aws.Context, *dynamodb.QueryInput, func(*dynamodb.QueryOutput, bool) bool, ...request.Option) error {
-	panic("QueryPagesWithContext is not implemented")
-}
-
 // RestoreTableFromBackup is not implemented. It will panic in all cases.
 func (db *DynamoDb) RestoreTableFromBackup(*dynamodb.RestoreTableFromBackupInput) (*dynamodb.RestoreTableFromBackupOutput, error) {
 	panic("RestoreTableFromBackup is not implemented")
