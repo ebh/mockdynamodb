@@ -20,9 +20,13 @@ func (db *DynamoDb) Query(input *dynamodb.QueryInput) (*dynamodb.QueryOutput, er
 	return db.query(input)
 }
 
-// QueryWithContext is not implemented. It will panic in all cases.
-func (db *DynamoDb) QueryWithContext(aws.Context, *dynamodb.QueryInput, ...request.Option) (*dynamodb.QueryOutput, error) {
-	panic("QueryWithContext is not implemented")
+// QueryWithContext not implemented.
+// Uses same logic as Query() and thus does not record context or options
+func (db *DynamoDb) QueryWithContext(ctx aws.Context, input *dynamodb.QueryInput, opts ...request.Option) (*dynamodb.QueryOutput, error) {
+	db.Lock()
+	defer db.Unlock()
+
+	return db.query(input)
 }
 
 // QueryRequest is not implemented. It will panic in all cases.

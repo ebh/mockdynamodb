@@ -20,9 +20,13 @@ func (db *DynamoDb) PutItem(input *dynamodb.PutItemInput) (*dynamodb.PutItemOutp
 	return db.putItem(input)
 }
 
-// PutItemWithContext is not implemented. It will panic in all cases.
-func (db *DynamoDb) PutItemWithContext(aws.Context, *dynamodb.PutItemInput, ...request.Option) (*dynamodb.PutItemOutput, error) {
-	panic("PutItemWithContext is not implemented")
+// PutItemWithContext is implemented.
+// Uses same logic as PutItem() and thus does not record context or options
+func (db *DynamoDb) PutItemWithContext(ctx aws.Context, input *dynamodb.PutItemInput, opts ...request.Option) (*dynamodb.PutItemOutput, error) {
+	db.Lock()
+	defer db.Unlock()
+
+	return db.putItem(input)
 }
 
 // PutItemRequest is not implemented. It will panic in all cases.
