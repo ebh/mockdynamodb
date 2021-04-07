@@ -37,11 +37,13 @@ func (t *Table) ReceivedPutItemInputs() *[]dynamodb.PutItemInput {
 // AddReturnPutItemOutput pushes a PutItemOutput that will then be returned by calls to PutItem()
 // PutItemOutputs are returned in the same order in which they are pushed
 // If nil is pushed then PutItem() will return an error
-func (t *Table) AddReturnPutItemOutput(i *dynamodb.PutItemOutput) {
+func (t *Table) AddReturnPutItemOutput(outputs ...*dynamodb.PutItemOutput) {
 	t.Lock()
 	defer t.Unlock()
 
-	t.returnPutItemOutputs = append(t.returnPutItemOutputs, i)
+	for _, o := range outputs {
+		t.returnPutItemOutputs = append(t.returnPutItemOutputs, o)	
+	}
 }
 
 func (t *Table) popReturnPutItemOutput() *dynamodb.PutItemOutput {
@@ -64,11 +66,13 @@ func (t *Table) ReceivedQueryInputs() *[]dynamodb.QueryInput {
 // AddReturnQueryOutput pushes a QueryOutput that will then be returned by calls to Query()
 // QueryOutputs are returned in the same order in which they are pushed
 // If nil is pushed then Query() will return an error
-func (t *Table) AddReturnQueryOutput(i *dynamodb.QueryOutput) {
+func (t *Table) AddReturnQueryOutput(outputs ...*dynamodb.QueryOutput) {
 	t.Lock()
 	defer t.Unlock()
 
-	t.returnQueryOutputs = append(t.returnQueryOutputs, i)
+	for _, o := range outputs {
+		t.returnQueryOutputs = append(t.returnQueryOutputs, o)
+	}
 }
 
 func (t *Table) popReturnQueryOutput() *dynamodb.QueryOutput {
