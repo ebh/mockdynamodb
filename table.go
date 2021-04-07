@@ -18,8 +18,8 @@ type Table struct {
 
 func newTable() *Table {
 	return &Table{
-		receivedPutItemInputs: nil,
 		returnPutItemOutputs:  []*dynamodb.PutItemOutput{},
+		returnQueryOutputs:  []*dynamodb.QueryOutput{},
 	}
 }
 
