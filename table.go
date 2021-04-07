@@ -18,8 +18,8 @@ type Table struct {
 
 func newTable() *Table {
 	return &Table{
-		returnPutItemOutputs:  []*dynamodb.PutItemOutput{},
-		returnQueryOutputs:  []*dynamodb.QueryOutput{},
+		returnPutItemOutputs: []*dynamodb.PutItemOutput{},
+		returnQueryOutputs:   []*dynamodb.QueryOutput{},
 	}
 }
 
@@ -41,9 +41,7 @@ func (t *Table) AddReturnPutItemOutput(outputs ...*dynamodb.PutItemOutput) {
 	t.Lock()
 	defer t.Unlock()
 
-	for _, o := range outputs {
-		t.returnPutItemOutputs = append(t.returnPutItemOutputs, o)	
-	}
+	t.returnPutItemOutputs = append(t.returnPutItemOutputs, outputs...)
 }
 
 func (t *Table) popReturnPutItemOutput() *dynamodb.PutItemOutput {
@@ -70,13 +68,15 @@ func (t *Table) AddReturnQueryOutput(outputs ...*dynamodb.QueryOutput) {
 	t.Lock()
 	defer t.Unlock()
 
-	for _, o := range outputs {
-		t.returnQueryOutputs = append(t.returnQueryOutputs, o)
-	}
+	t.returnQueryOutputs = append(t.returnQueryOutputs, outputs...)
 }
 
 func (t *Table) popReturnQueryOutput() *dynamodb.QueryOutput {
 	x, a := t.returnQueryOutputs[0], t.returnQueryOutputs[1:]
 	t.returnQueryOutputs = a
 	return x
+}
+
+func (t *Table) moreQueryOutputs() bool {
+	return len(t.returnQueryOutputs) > 0
 }

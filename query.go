@@ -22,7 +22,7 @@ func (db *DynamoDb) Query(input *dynamodb.QueryInput) (*dynamodb.QueryOutput, er
 
 // QueryWithContext not implemented.
 // Uses same logic as Query() and thus does not record context or options
-func (db *DynamoDb) QueryWithContext(ctx aws.Context, input *dynamodb.QueryInput, opts ...request.Option) (*dynamodb.QueryOutput, error) {
+func (db *DynamoDb) QueryWithContext(_ aws.Context, input *dynamodb.QueryInput, _ ...request.Option) (*dynamodb.QueryOutput, error) {
 	db.Lock()
 	defer db.Unlock()
 
@@ -35,8 +35,11 @@ func (db *DynamoDb) QueryRequest(*dynamodb.QueryInput) (*request.Request, *dynam
 }
 
 // QueryPages is not implemented. It will panic in all cases.
-func (db *DynamoDb) QueryPages(*dynamodb.QueryInput, func(*dynamodb.QueryOutput, bool) bool) error {
-	panic("QueryPages is not implemented")
+func (db *DynamoDb) QueryPages(i *dynamodb.QueryInput, fn func(*dynamodb.QueryOutput, bool) bool) error {
+	db.Lock()
+	defer db.Unlock()
+
+	return db.queryPages(i, fn)
 }
 
 // QueryPagesWithContext is not implemented. It will panic in all cases.
@@ -54,7 +57,7 @@ func (db *DynamoDb) query(input *dynamodb.QueryInput) (*dynamodb.QueryOutput, er
 
 	if table := db.GetTable(*input.TableName); table != nil {
 		table.receivedQueryInputs = append(table.receivedQueryInputs, *input)
-		if len(table.returnQueryOutputs) > 0 {
+		if table.moreQueryOutputs() {
 			o := table.popReturnQueryOutput()
 			if o != nil {
 				return o, nil
@@ -66,4 +69,36 @@ func (db *DynamoDb) query(input *dynamodb.QueryInput) (*dynamodb.QueryOutput, er
 	}
 
 	return &dynamodb.QueryOutput{}, errorNonExistentTable()
+}
+
+func (db *DynamoDb) queryPages(input *dynamodb.QueryInput, fn func(*dynamodb.QueryOutput, bool) bool) error {
+	err := checkRequiredFields(map[string]interface{}{
+		"QueryInput.TableName": input.TableName,
+	})
+	if err != nil {
+		return err
+	}
+
+	if table := db.GetTable(*input.TableName); table != nil {
+		table.receivedQueryInputs = append(table.receivedQueryInputs, *input)
+		if table.moreQueryOutputs() {
+			for ok := true; ok; ok = table.moreQueryOutputs() {
+				output := table.popReturnQueryOutput()
+
+				if output == nil {
+					return errors.New("nil QueryOutput")
+				}
+
+				if !fn(output, false) {
+					return errors.New("output handler function returned false")
+				}
+			}
+
+			return nil
+		}
+
+		return errors.New("no QueryOutputs to return")
+	}
+
+	return errorNonExistentTable()
 }
