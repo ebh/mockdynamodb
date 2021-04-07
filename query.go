@@ -34,7 +34,11 @@ func (db *DynamoDb) QueryRequest(*dynamodb.QueryInput) (*request.Request, *dynam
 	panic("QueryRequest is not implemented")
 }
 
-// QueryPages is not implemented. It will panic in all cases.
+// QueryPages is implemented. It will panic in all cases.
+// Use AddReturnQueryOutput() set QueryOutput for QueryPages() to return.
+// QueryPages() will return QueryOutputs in the same order in which AddReturnQueryOutput() is called.
+// If a nil value is given to AddReturnQueryOutput() then QueryPages() will return an error.
+// Use ReceivedQueryInputs() retrieve the inputs given to QueryPages(), use for asserting.
 func (db *DynamoDb) QueryPages(i *dynamodb.QueryInput, fn func(*dynamodb.QueryOutput, bool) bool) error {
 	db.Lock()
 	defer db.Unlock()
