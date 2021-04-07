@@ -46,9 +46,13 @@ func (db *DynamoDb) QueryPages(i *dynamodb.QueryInput, fn func(*dynamodb.QueryOu
 	return db.queryPages(i, fn)
 }
 
-// QueryPagesWithContext is not implemented. It will panic in all cases.
-func (db *DynamoDb) QueryPagesWithContext(aws.Context, *dynamodb.QueryInput, func(*dynamodb.QueryOutput, bool) bool, ...request.Option) error {
-	panic("QueryPagesWithContext is not implemented")
+// QueryPagesWithContext is implemented.
+// Uses same logic as QueryPages() and thus does not record context or options
+func (db *DynamoDb) QueryPagesWithContext(_ aws.Context, i *dynamodb.QueryInput, fn func(*dynamodb.QueryOutput, bool) bool, _ ...request.Option) error {
+	db.Lock()
+	defer db.Unlock()
+
+	return db.queryPages(i, fn)
 }
 
 func (db *DynamoDb) query(input *dynamodb.QueryInput) (*dynamodb.QueryOutput, error) {
