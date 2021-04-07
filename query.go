@@ -20,7 +20,7 @@ func (db *DynamoDb) Query(input *dynamodb.QueryInput) (*dynamodb.QueryOutput, er
 	return db.query(input)
 }
 
-// QueryWithContext not implemented.
+// QueryWithContext is implemented.
 // Uses same logic as Query() and thus does not record context or options
 func (db *DynamoDb) QueryWithContext(_ aws.Context, input *dynamodb.QueryInput, _ ...request.Option) (*dynamodb.QueryOutput, error) {
 	db.Lock()
