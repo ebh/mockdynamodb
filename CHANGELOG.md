@@ -7,11 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [0.0.3] - 2021-04-07
+### Added
+- QueryPages() implemented
+- QueryPagesWithContext() implemented
+
 ### Changed
 - AddReturnPutItemOutput() to accept multiple PutItemOutputs
 - AddReturnQueryOutput() to accept multiple QueryOutputs
-- QueryPages() implemented
-- QueryPagesWithContext() implemented
 
 ## [0.0.2] - 2021-03-07
 ### Added
