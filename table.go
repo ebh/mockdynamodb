@@ -14,12 +14,16 @@ type Table struct {
 
 	receivedQueryInputs []dynamodb.QueryInput
 	returnQueryOutputs  []*dynamodb.QueryOutput
+
+	receivedScanInputs []dynamodb.ScanInput
+	returnScanOutputs  []*dynamodb.ScanOutput
 }
 
 func newTable() *Table {
 	return &Table{
 		returnPutItemOutputs: []*dynamodb.PutItemOutput{},
 		returnQueryOutputs:   []*dynamodb.QueryOutput{},
+		returnScanOutputs:    []*dynamodb.ScanOutput{},
 	}
 }
 
@@ -79,4 +83,35 @@ func (t *Table) popReturnQueryOutput() *dynamodb.QueryOutput {
 
 func (t *Table) moreQueryOutputs() bool {
 	return len(t.returnQueryOutputs) > 0
+}
+
+// ReceivedScanInputs returns the ScanInputs submitted by all calls to Scan()
+// The order of the elements returned is the order in which they were received by Scan()
+func (t *Table) ReceivedScanInputs() *[]dynamodb.ScanInput {
+	t.Lock()
+	defer t.Unlock()
+
+	tmp := make([]dynamodb.ScanInput, len(t.receivedScanInputs))
+	copy(tmp, t.receivedScanInputs)
+	return &tmp
+}
+
+// AddReturnScanOutput pushes a ScanOutput that will then be returned by calls to Scan()
+// ScanOutputs are returned in the same order in which they are pushed
+// If nil is pushed then Scan() will return an error
+func (t *Table) AddReturnScanOutput(outputs ...*dynamodb.ScanOutput) {
+	t.Lock()
+	defer t.Unlock()
+
+	t.returnScanOutputs = append(t.returnScanOutputs, outputs...)
+}
+
+func (t *Table) popReturnScanOutput() *dynamodb.ScanOutput {
+	x, a := t.returnScanOutputs[0], t.returnScanOutputs[1:]
+	t.returnScanOutputs = a
+	return x
+}
+
+func (t *Table) moreScanOutputs() bool {
+	return len(t.returnScanOutputs) > 0
 }
