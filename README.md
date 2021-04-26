@@ -25,7 +25,7 @@ result, err := client.PutItem(&dynamodb.PutItemInput{
 
 ## Supported Functionality
 
-Only some of the DynamoDB methods are implemented, at moment. Methods not implemented
+Only some DynamoDB methods are implemented, at moment. Methods not implemented
 will panic. If you want a method implemented please [raise an issue](https://github.com/ebh/mockdynamodb/issues/new).
 
 You can view the specific implementation details in the
