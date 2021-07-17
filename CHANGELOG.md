@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.5] - 2021-07-17
+### Fixed
+- Update version of github.com/aws/aws-sdk-go as existing version had a vulnerability
+
 ## [0.0.4] - 2021-04-26
 ### Added
 - Scan() implemented
